@@ -11,16 +11,10 @@ import org.springframework.lang.NonNull;
 public class Contact {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @NonNull
     private String firstName;
-    @NonNull
     private String lastName;
-    @NonNull
-    @Column(unique = true)
     private String email;
-    @NonNull
     private String phone;
 
     public Contact() {
