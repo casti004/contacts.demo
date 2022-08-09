@@ -67,12 +67,12 @@ const ContactEdit = () => {
                 </FormGroup>
                 <FormGroup>
                     <Label for="email">Email</Label>
-                    <Input type="text" name="email" id="email" value={contact.email || ''}
+                    <Input type="email" name="email" id="email" value={contact.email || ''}
                         onChange={handleChange} autoComplete="email" />
                 </FormGroup>
                 <FormGroup>
                     <Label for="phone">Phone</Label>
-                    <Input type="text" name="phone" id="phone" value={contact.phone || ''}
+                    <Input type="phone" name="phone" id="phone" value={contact.phone || ''}
                         onChange={handleChange} autoComplete="phone" />
                 </FormGroup>
                 <FormGroup>

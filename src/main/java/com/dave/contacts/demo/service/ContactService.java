@@ -65,12 +65,15 @@ public class ContactService {
     @Transactional
     public String updateContact(Contact contact){
             try {
-                    Contact contactToUpdate = contactRepository.findById(contact.getId()).get();
-                    contactToUpdate.setFirstName(contact.getFirstName());
-                    contactToUpdate.setLastName(contact.getLastName());
-                    contactToUpdate.setEmail(contact.getEmail());
-                    contactToUpdate.setPhone(contact.getPhone());
-                    contactRepository.save(contactToUpdate);
+                    Optional<Contact> contactToUpdate = contactRepository.findById(contact.getId());
+                    if (contactToUpdate.isPresent()) {
+                        contactToUpdate.get().setFirstName(contact.getFirstName());
+                        contactToUpdate.get().setLastName(contact.getLastName());
+                        contactToUpdate.get().setEmail(contact.getEmail());
+                        contactToUpdate.get().setPhone(contact.getPhone());
+                        contactRepository.save(contactToUpdate.get());
+                    }
+
 
                 return "Contact record updated.";
             }catch (Exception e){
@@ -83,11 +86,15 @@ public class ContactService {
     public String deleteContact(Contact contact){
         if (contactRepository.existsByEmail(contact.getEmail())){
             try {
-                List<Contact> contacts = contactRepository.findByEmail(contact.getEmail());
-                contacts.stream().forEach(s -> {
-                    contactRepository.delete(s);
-                });
-                return "Contact record deleted successfully.";
+                Optional<Contact> contactToDelete = contactRepository.findById(contact.getId());
+
+                if(contactToDelete.isPresent()){
+                    contactRepository.delete(contactToDelete.get());
+                    return "Contact record deleted successfully.";
+                } else{
+                    return "-1";
+                }
+                
             }catch (Exception e){
                 throw e;
             }
