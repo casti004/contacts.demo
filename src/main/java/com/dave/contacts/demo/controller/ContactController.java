@@ -4,6 +4,7 @@ import com.dave.contacts.demo.entity.Contact;
 import com.dave.contacts.demo.service.ContactService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.server.ResponseStatusException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,12 @@ public class ContactController {
     @PostMapping("/contact")
     public String createContact(@RequestBody Contact contact) {
         log.info("Request to create contact: {}", contact);
-        return contactService.createContact(contact);
+        String result = contactService.createContact(contact);
+        if (result.equals("-1")){
+            throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, "Contact record has empty first name\n");
+        } else {
+            return result;
+        }
     }
 
     @PutMapping("/contact")

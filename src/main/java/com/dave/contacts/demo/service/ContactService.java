@@ -20,16 +20,27 @@ public class ContactService {
     @Transactional
     public String createContact(Contact contact){
         try {
-            if (!contactRepository.existsByEmail(contact.getEmail()) && !contact.getEmail().isEmpty()  ){
+            // if (!contactRepository.existsByEmail(contact.getEmail()) && !contact.getEmail().isEmpty()  ){
+            //     contact.setId(null == contactRepository.findMaxId()? 0 : contactRepository.findMaxId() + 1);
+            //     contactRepository.save(contact);
+            //     return "contact record created successfully.";
+            // }else {
+            //     if (contact.getEmail().isEmpty()){
+            //         return "contact must have an email address";
+            //     }
+            //     return "contact already exists in the database.";
+            // }
+
+            // Use case, everything can be empty, except first name
+            if (!contact.getFirstName().isEmpty()){
                 contact.setId(null == contactRepository.findMaxId()? 0 : contactRepository.findMaxId() + 1);
                 contactRepository.save(contact);
                 return "contact record created successfully.";
-            }else {
-                if (contact.getEmail().isEmpty()){
-                    return "contact must have an email address";
-                }
-                return "contact already exists in the database.";
+            } else{
+                return "-1";
             }
+
+
         }catch (Exception e){
             throw e;
         }
@@ -53,35 +64,37 @@ public class ContactService {
 
     @Transactional
     public String updateContact(Contact contact){
-        if (contactRepository.existsByEmail(contact.getEmail())){
             try {
-                List<Contact> contacts = contactRepository.findByEmail(contact.getEmail());
-                contacts.stream().forEach(s -> {
-                    Contact contactToUpdate = contactRepository.findById(s.getId()).get();
-                    contactToUpdate.setFirstName(contact.getFirstName());
-                    contactToUpdate.setLastName(contact.getLastName());
-                    contactToUpdate.setEmail(contact.getEmail());
-                    contactToUpdate.setPhone(contact.getPhone());
-                    contactRepository.save(contactToUpdate);
-                });
+                    Optional<Contact> contactToUpdate = contactRepository.findById(contact.getId());
+                    if (contactToUpdate.isPresent()) {
+                        contactToUpdate.get().setFirstName(contact.getFirstName());
+                        contactToUpdate.get().setLastName(contact.getLastName());
+                        contactToUpdate.get().setEmail(contact.getEmail());
+                        contactToUpdate.get().setPhone(contact.getPhone());
+                        contactRepository.save(contactToUpdate.get());
+                    }
+
+
                 return "Contact record updated.";
             }catch (Exception e){
                 throw e;
             }
-        }else {
-            return "Contact does not exists in the database.";
-        }
+        
     }
 
     @Transactional
     public String deleteContact(Contact contact){
         if (contactRepository.existsByEmail(contact.getEmail())){
             try {
-                List<Contact> contacts = contactRepository.findByEmail(contact.getEmail());
-                contacts.stream().forEach(s -> {
-                    contactRepository.delete(s);
-                });
-                return "Contact record deleted successfully.";
+                Optional<Contact> contactToDelete = contactRepository.findById(contact.getId());
+
+                if(contactToDelete.isPresent()){
+                    contactRepository.delete(contactToDelete.get());
+                    return "Contact record deleted successfully.";
+                } else{
+                    return "-1";
+                }
+                
             }catch (Exception e){
                 throw e;
             }
