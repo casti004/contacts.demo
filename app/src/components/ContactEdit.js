@@ -13,12 +13,16 @@ const ContactEdit = () => {
     const [contact, setContact] = useState(initialFormState);
     const navigate = useNavigate();
     const { id } = useParams();
+    const [isDisabled, setIsDisabled] = useState(false);
 
     useEffect(() => {
         if (id !== 'new') {
+            setIsDisabled(true);
             fetch(`/api/contact/${id}`)
                 .then(response => response.json())
                 .then(data => setContact(data));
+        } else {
+            setIsDisabled(false);
         }
     }, [id, setContact]);
 
@@ -52,7 +56,7 @@ const ContactEdit = () => {
                 <FormGroup>
                     <Label for="firstName">First Name</Label>
                     <Input type="text" name="firstName" id="firstName" value={contact.firstName || ''}
-                        onChange={handleChange} autoComplete="firstName" />
+                        onChange={handleChange} autoComplete="firstName" disabled={isDisabled} />
                 </FormGroup>
                 <FormGroup>
                     <Label for="lastName">Last Name</Label>

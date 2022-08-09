@@ -20,16 +20,27 @@ public class ContactService {
     @Transactional
     public String createContact(Contact contact){
         try {
-            if (!contactRepository.existsByEmail(contact.getEmail()) && !contact.getEmail().isEmpty()  ){
+            // if (!contactRepository.existsByEmail(contact.getEmail()) && !contact.getEmail().isEmpty()  ){
+            //     contact.setId(null == contactRepository.findMaxId()? 0 : contactRepository.findMaxId() + 1);
+            //     contactRepository.save(contact);
+            //     return "contact record created successfully.";
+            // }else {
+            //     if (contact.getEmail().isEmpty()){
+            //         return "contact must have an email address";
+            //     }
+            //     return "contact already exists in the database.";
+            // }
+
+            // Use case, everything can be empty, except first name
+            if (!contact.getFirstName().isEmpty()){
                 contact.setId(null == contactRepository.findMaxId()? 0 : contactRepository.findMaxId() + 1);
                 contactRepository.save(contact);
                 return "contact record created successfully.";
-            }else {
-                if (contact.getEmail().isEmpty()){
-                    return "contact must have an email address";
-                }
-                return "contact already exists in the database.";
+            } else{
+                return "contact record has empty first name";
             }
+
+
         }catch (Exception e){
             throw e;
         }
@@ -53,24 +64,19 @@ public class ContactService {
 
     @Transactional
     public String updateContact(Contact contact){
-        if (contactRepository.existsByEmail(contact.getEmail())){
             try {
-                List<Contact> contacts = contactRepository.findByEmail(contact.getEmail());
-                contacts.stream().forEach(s -> {
-                    Contact contactToUpdate = contactRepository.findById(s.getId()).get();
+                    Contact contactToUpdate = contactRepository.findById(contact.getId()).get();
                     contactToUpdate.setFirstName(contact.getFirstName());
                     contactToUpdate.setLastName(contact.getLastName());
                     contactToUpdate.setEmail(contact.getEmail());
                     contactToUpdate.setPhone(contact.getPhone());
                     contactRepository.save(contactToUpdate);
-                });
+
                 return "Contact record updated.";
             }catch (Exception e){
                 throw e;
             }
-        }else {
-            return "Contact does not exists in the database.";
-        }
+        
     }
 
     @Transactional
