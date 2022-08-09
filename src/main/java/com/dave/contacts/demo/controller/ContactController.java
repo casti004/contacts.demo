@@ -6,6 +6,7 @@ import com.dave.contacts.demo.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -34,6 +36,11 @@ public class ContactController {
     @GetMapping("/contacts")
     public List<Contact> readContacts(){
         return contactService.readContacts();
+    }
+
+    @GetMapping("/contact/{id}")
+    public Optional<Contact> readContact(@PathVariable Integer id){
+        return contactService.readContact(id);
     }
 
     @PostMapping("/contact")
