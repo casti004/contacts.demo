@@ -33,7 +33,7 @@ public class ContactService {
 
             // Use case, everything can be empty, except first name
             if (!contact.getFirstName().isEmpty()){
-                contact.setId(null == contactRepository.findMaxId()? 0 : contactRepository.findMaxId() + 1);
+                contact.setId(null == contactRepository.findMaxId()? 1 : contactRepository.findMaxId() + 1);
                 contactRepository.save(contact);
                 return "contact record created successfully.";
             } else{
