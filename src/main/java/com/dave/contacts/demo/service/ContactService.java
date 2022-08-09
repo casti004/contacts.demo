@@ -3,10 +3,13 @@ package com.dave.contacts.demo.service;
 import com.dave.contacts.demo.entity.Contact;
 import com.dave.contacts.demo.repository.ContactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ContactService {
@@ -17,11 +20,14 @@ public class ContactService {
     @Transactional
     public String createContact(Contact contact){
         try {
-            if (!contactRepository.existsByEmail(contact.getEmail())){
+            if (!contactRepository.existsByEmail(contact.getEmail()) && !contact.getEmail().isEmpty()  ){
                 contact.setId(null == contactRepository.findMaxId()? 0 : contactRepository.findMaxId() + 1);
                 contactRepository.save(contact);
                 return "contact record created successfully.";
             }else {
+                if (contact.getEmail().isEmpty()){
+                    return "contact must have an email address";
+                }
                 return "contact already exists in the database.";
             }
         }catch (Exception e){
@@ -30,7 +36,19 @@ public class ContactService {
     }
 
     public List<Contact> readContacts(){
-        return contactRepository.findAll();
+        try{
+            return contactRepository.findAll();
+        }catch (Exception e){
+            throw e;
+        }
+    }
+
+    public Optional<Contact> readContact(Integer id){
+        try{
+            return contactRepository.findById(id);
+        }catch (Exception e){
+            throw e;
+        }
     }
 
     @Transactional
