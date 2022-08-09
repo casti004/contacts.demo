@@ -37,7 +37,7 @@ public class ContactService {
                 contactRepository.save(contact);
                 return "contact record created successfully.";
             } else{
-                return "contact record has empty first name";
+                return "-1";
             }
 
 

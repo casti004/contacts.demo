@@ -20,7 +20,8 @@ const ContactEdit = () => {
             setIsDisabled(true);
             fetch(`/api/contact/${id}`)
                 .then(response => response.json())
-                .then(data => setContact(data));
+                .then(data => setContact(data))
+                .catch(err => { console.log(err) })
         } else {
             setIsDisabled(false);
         }
@@ -42,7 +43,8 @@ const ContactEdit = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(contact)
-        });
+        }).catch(err => { console.log(err) });
+
         setContact(initialFormState);
         navigate('/contacts');
     }

@@ -21,7 +21,7 @@ const ContactCardList = () => {
             .then(data => {
                 setContacts(data);
                 setLoading(false);
-            })
+            }).catch(err => { console.log(err) });
     }, []);
 
     const remove = async (contact) => {
@@ -35,7 +35,7 @@ const ContactCardList = () => {
         }).then(() => {
             let updatedContacts = [...contacts].filter(i => i.id !== contact.id);
             setContacts(updatedContacts);
-        });
+        }).catch(err => { console.log(err) });
     }
 
     if (loading) {
